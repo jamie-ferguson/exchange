@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Exchange</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<style>
+			body {
+			/*  font-family: "helvetica neue", sans-serif;*/
+				font-size: 12px;
+			}
+
+			.container-fluid {
+			    padding: 50px 50px;
+			}
+
+			.bg-navy {
+			    background-color: #334D5C;
+			    color: #ffffff;
+			}
+			.bg-gainsboro {
+			    background-color: #dcdcdc;
+			    color: #000000;
+			}
+
+
+			.convertionTextField { 
+			    text-transform: uppercase;
+			}
+			::-webkit-input-placeholder { /* WebKit browsers */
+			    text-transform: none;
+			}
+			:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+			    text-transform: none;
+			}
+			::-moz-placeholder { /* Mozilla Firefox 19+ */
+			    text-transform: none;
+			}
+			:-ms-input-placeholder { /* Internet Explorer 10+ */
+			    text-transform: none;
+			}
+			::placeholder { /* Recent browsers */
+			    text-transform: none;
+			}
+			
+		</style>
+
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+		<script>
+			$( document ).ready(function() {
+
+				$('#currencySubmit').click(function(e){
+					var fromCurrency = $('#fromCurrency').val();
+					var toCurrency = $('#toCurrency').val();
+					var amount = $('#amount').val();
+
+					console.log(fromCurrency + ' ' + toCurrency + ' ' + amount);
+
+					$.ajax({
+						type: "POST",
+						url: "{{convertURL}}",
+						data: 	"amount=" + amount +
+								"&fromCurrency=" + fromCurrency +
+								"&toCurrency=" + toCurrency,
+						beforeSend: function() {
+
+						},
+						success: function(data) {
+							console.log(data);
+							$('#resultText').html(data.amount + " as of " + data.createdAt);
+
+						},
+						error: function(error) {
+
+						},
+						complete: function() {
+
+						}
+					});
+
+				});
+
+			});
+		</script>
+	</head>
+	<body>
+
+		<!-- HEADER CONTAINER -->
+		<div id="header" class="container-fluid bg-navy">
+			<div class="row text-center">
+				<h4>Exchange</h4> 
+				<p>A Node.js powered currency exchange application.</p>
+			</div>
+		</div>
+
+		<!-- MAIN BODY CONTAINER -->
+		<div class="container">
+
+			<div class="row">
+				<p>Select the from and to currencies below.</p>
+			</div>
+
+			<!-- submit currencies form -->
+
+				<div class="row">
+					<div class="col-sm-6">
+						<table class="table">
+							<tbody>
+								<tr>
+									<td><input type="text" class="form-control convertionTextField" id="fromCurrency" placeholder="From"></td>
+									<td><input type="text" class="form-control convertionTextField" id="toCurrency" placeholder="To"></td>
+									<td><input type="text" class="form-control convertionTextField" id="amount" placeholder="Amount"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<button type="submit" class="btn btn-primary" id="currencySubmit"  onclick="this.blur();">Submit</button>
+
+
+			<!-- handlebars var -->
+			{{{body}}}
+
+		</div>
+
+	</body>
+</html>

@@ -1,0 +1,22 @@
+<div class="row">
+	<p>Results will appear here.</p>
+</div>
+
+<div class="row" id="resultText">
+	
+</div>
+
+{{#if query}}
+<div class="row">
+	{{content}}
+	{{convertURL}}
+</div>
+{{/if}}
+
+<div class="row">
+	<ul class="list-group">
+		{{#each results}}
+		<li class="list-group-item">{{this.ID}} {{this.Timestamp}}</li>
+		{{/each}}
+	</ul>
+</div>

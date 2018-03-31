@@ -35,6 +35,9 @@ app.post('/convert', (req, res) => {
 	var amount = req.body.amount;
 
 	var con = createSQLCon();
+	// SELECT ID, date_format(Created_at, '%Y-%m-%d %h:%i:%s') as createdAt, Timestamp, from_unixtime(timestamp,'%Y-%m-%d %h:%i:%s') AS Time, "USD" AS fromCurrency, "GBP" AS toCurrency
+	// FROM Rates
+	// ORDER BY id DESC LIMIT 0, 1;
 	var sqlSel = "SELECT ID, date_format(Created_at, '%Y-%m-%d %h:%i:%s') as createdAt, Timestamp, from_unixtime(timestamp,'%Y-%m-%d %h:%i:%s') AS Time, " + fromCurrency + " AS fromCurrency, " + toCurrency + " AS toCurrency FROM Rates ORDER BY id DESC LIMIT 0, 1";
 	selectSQL(con, sqlSel)
 		.then(function(data){

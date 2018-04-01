@@ -41,6 +41,17 @@
 			::placeholder { /* Recent browsers */
 			    text-transform: none;
 			}
+
+
+			ul{
+				background-color: #EEE;
+				cursor:pointer;
+			}
+			li{
+				padding:5px;
+			}
+	#currencyListFrom {  position: relative; z-index: 99 !important; }
+
 			
 		</style>
 
@@ -53,14 +64,58 @@
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 		<script>
+
+			// create the object containing the currencies
+			var currencies = {{{ currencies }}};
+
 			$( document ).ready(function() {
+
+				$('#fromCurrency').keyup(function(){
+					var query = $(this).val().toUpperCase();
+					if(query != ''){
+						var htmlList = '';
+						for (var i in currencies) {
+							if( currencies[i].startsWith(query) ){
+								htmlList += '<li>' + currencies[i] + '</li>';
+							}
+						}
+						$('#currencyListFrom').hide();
+						$('#currencyListFrom ul').html(htmlList);
+						$('#currencyListFrom').show();
+					}
+				});
+
+				$('#toCurrency').keyup(function(){
+					var query = $(this).val().toUpperCase();
+					if(query != ''){
+						var htmlList = '';
+						for (var i in currencies) {
+							if( currencies[i].startsWith(query) ){
+								htmlList += '<li>' + currencies[i] + '</li>';
+							}
+						}
+						$('#currencyListTo').hide();
+						$('#currencyListTo ul').html(htmlList);
+						$('#currencyListTo').show();
+					}
+				});
+
+				$('#currencyListFrom').on('click', 'li', function(){
+					$('#fromCurrency').val($(this).text());
+					$('#currencyListFrom').hide();
+				});
+
+				$('#currencyListTo').on('click', 'li', function(){
+					$('#toCurrency').val($(this).text());
+					$('#currencyListTo').hide();
+				});
+
 
 				$('#currencySubmit').click(function(e){
 					var fromCurrency = $('#fromCurrency').val();
 					var toCurrency = $('#toCurrency').val();
 					var amount = $('#amount').val();
 
-					console.log(fromCurrency + ' ' + toCurrency + ' ' + amount);
 
 					$.ajax({
 						type: "POST",
@@ -72,9 +127,7 @@
 
 						},
 						success: function(data) {
-							console.log(data);
 							$('#resultText').html(data.amount + " as of " + data.createdAt);
-
 						},
 						error: function(error) {
 
@@ -85,6 +138,16 @@
 					});
 
 				});
+
+
+
+
+
+
+
+
+
+
 
 			});
 		</script>
@@ -113,8 +176,20 @@
 						<table class="table">
 							<tbody>
 								<tr>
-									<td><input type="text" class="form-control convertionTextField" id="fromCurrency" placeholder="From"></td>
-									<td><input type="text" class="form-control convertionTextField" id="toCurrency" placeholder="To"></td>
+									<td>
+										<input type="text" class="form-control convertionTextField" id="fromCurrency" placeholder="From">
+										<div id="currencyListFrom">
+											<ul class="list-unstyled">
+											</ul>
+										</div>
+									</td>
+									<td>
+										<input type="text" class="form-control convertionTextField" id="toCurrency" placeholder="To">
+										<div id="currencyListTo">
+											<ul class="list-unstyled">
+											</ul>
+										</div>
+									</td>
 									<td><input type="text" class="form-control convertionTextField" id="amount" placeholder="Amount"></td>
 								</tr>
 							</tbody>

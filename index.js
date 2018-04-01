@@ -19,10 +19,28 @@ app.set('port', (process.env.PORT || 3002));
 
 // home page route
 app.get('/', (req, res) => {
-	res.render('home', {
-		convertURL:'convert',
-		query: false
-	});
+
+	var con = createSQLCon();
+	var sqlSel = "SELECT Code FROM Currencies ORDER BY Code ASC";
+	selectSQL(con, sqlSel)
+		.then(function(data){
+
+			var currencyObj = {};
+			for (var i = 0; i < data.length; i++) {
+				currencyObj[i] = data[i].Code;
+			}
+
+			res.render('home', {
+				currencies: JSON.stringify(currencyObj),
+				convertURL: 'convert',
+				query: false
+			});
+
+		}).catch(function(data){
+
+		});
+
+
 });
 
 
@@ -47,13 +65,11 @@ app.post('/convert', (req, res) => {
 
 			var resultAmountGross = amount*fromRate/toRate;
 			var resultAmount = resultAmountGross.toFixed(2)
-			console.log(resultAmount);
 
 			var result = {};
 			result.createdAt = data[0].createdAt;
 			result.amount = resultAmount;
 
-			console.log(result);
 			res.send(result);
 
 
